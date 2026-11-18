@@ -103,7 +103,11 @@ tg["allowed_chat_ids"] = os.environ["OJ_TG_CHAT"]
 with open(path, "w", encoding="utf-8") as f:
     f.write(tomlkit.dumps(doc))
 '@
-& uv run --project $srcDir python -c $py
+$pyFile = Join-Path $env:TEMP 'oj-telegram-edit.py'
+Set-Content -Path $pyFile -Encoding ASCII -Value $py
+# Run from a file: Windows PowerShell strips double quotes from native-command args.
+& uv run --project $srcDir python $pyFile
+Remove-Item $pyFile -ErrorAction SilentlyContinue
 if ($LASTEXITCODE -ne 0) { Stop-Setup "Mise a jour de la configuration impossible." }
 Remove-Item Env:OJ_TG_TOKEN, Env:OJ_TG_CHAT, Env:OJ_TG_CONFIG, Env:OJ_TG_SETMODEL
 Write-Host "Configuration mise a jour : $configPath" -ForegroundColor Green

@@ -90,7 +90,8 @@ if (-not (Test-Path $configPath)) {
     & uv run --project $srcDir jarvis init --engine ollama --no-download --no-scan --no-analytics --force
 }
 $env:OJ_CONFIG = $configPath
-& uv run --project $srcDir python -c @'
+$pyFile = Join-Path $env:TEMP 'oj-config-edit.py'
+Set-Content -Path $pyFile -Encoding ASCII -Value @'
 import os, tomlkit
 path = os.environ["OJ_CONFIG"]
 with open(path, encoding="utf-8") as f:
@@ -100,7 +101,10 @@ doc.setdefault("intelligence", tomlkit.table())["default_model"] = "qwen3.5:2b"
 with open(path, "w", encoding="utf-8") as f:
     f.write(tomlkit.dumps(doc))
 '@
-Remove-Item Env:OJ_CONFIG
+# Run from a file: Windows PowerShell strips double quotes from native-command args.
+& uv run --project $srcDir python $pyFile
+if ($LASTEXITCODE -ne 0) { Stop-Setup "Mise a jour de la configuration impossible." }
+Remove-Item $pyFile, Env:OJ_CONFIG
 Write-Host "OK" -ForegroundColor Green
 
 Write-Host ""
