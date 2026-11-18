@@ -104,7 +104,7 @@ with open(path, "w", encoding="utf-8") as f:
 # Run from a file: Windows PowerShell strips double quotes from native-command args.
 & uv run --project $srcDir python $pyFile
 if ($LASTEXITCODE -ne 0) { Stop-Setup "Mise a jour de la configuration impossible." }
-Remove-Item $pyFile, Env:OJ_CONFIG
+Remove-Item $pyFile, Env:OJ_CONFIG -ErrorAction SilentlyContinue
 Write-Host "OK" -ForegroundColor Green
 
 Write-Host ""

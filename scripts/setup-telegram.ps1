@@ -109,7 +109,7 @@ Set-Content -Path $pyFile -Encoding ASCII -Value $py
 & uv run --project $srcDir python $pyFile
 Remove-Item $pyFile -ErrorAction SilentlyContinue
 if ($LASTEXITCODE -ne 0) { Stop-Setup "Mise a jour de la configuration impossible." }
-Remove-Item Env:OJ_TG_TOKEN, Env:OJ_TG_CHAT, Env:OJ_TG_CONFIG, Env:OJ_TG_SETMODEL
+Remove-Item Env:OJ_TG_TOKEN, Env:OJ_TG_CHAT, Env:OJ_TG_CONFIG, Env:OJ_TG_SETMODEL -ErrorAction SilentlyContinue
 Write-Host "Configuration mise a jour : $configPath" -ForegroundColor Green
 
 Write-Host ""
